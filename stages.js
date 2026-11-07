@@ -215,7 +215,7 @@ const STAGES = [
       { type: 'info', text: '最初の案件は「U-NEXT」！',
         sub: 'ハピタス経由でU-NEXTの31日間無料トライアルに申し込むと、2,200pt（2,200円分）。<br>ポイントサイトの使い方と仕組みに慣れるための、失敗しても痛くない案件です。' },
       { type: 'quiz', label: '確認', text: 'U-NEXTの有料会員だったことはある？',
-        choices: [{ label: 'ない', say: '作業を進めてください。', title: '⭕ 案件の対象です' },
+        choices: [{ label: 'ない', say: 'このまま作業を進めてください。', title: '⭕ 案件の対象です' },
           { label: 'ある', end: true, say: 'U-NEXTは対象外なので、次のノートに進み、別の案件で試してください。', title: '🙅 U-NEXTは対象外です' }],
         review: 'U-NEXTの有料会員だったことがある人は対象外。次のノートに進み、別の案件で試す。' },
       { type: 'quiz', text: '案件に申し込む前に、毎回やることは？',
