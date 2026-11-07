@@ -264,6 +264,8 @@
     document.querySelectorAll('#device button').forEach(b => b.classList.toggle('on', b.dataset.d === device()));
     $('stages').innerHTML = list.map((s, i) => {
       const done = isCleared(s.id);
+      // 番号はまとまり(区切り)ごとに1から振り直す
+      const no = list.slice(0, i + 1).filter(t => t.area === s.area).length;
       let head = '';
       if (i === 0 || list[i - 1].area !== s.area) {
         const a = AREAS[s.area], mates = list.filter(t => t.area === s.area), got = mates.filter(t => isCleared(t.id)).length;
@@ -271,7 +273,7 @@
           `<span class="${got === mates.length ? 'all' : ''}">${got}/${mates.length}</span></div>`;
       }
       const { title, lead } = forDevice(s);
-      return head + `<button class="stage" data-i="${STAGES.indexOf(s)}"><span class="stage-number">${i + 1}</span><b>${title}</b><span>${lead}</span>` +
+      return head + `<button class="stage" data-i="${STAGES.indexOf(s)}"><span class="stage-number">${no}</span><b>${title}</b><span>${lead}</span>` +
         (done ? `<i>クリア済み ✓</i>` : `<i class="none">まだクリアしていません</i>`) + `</button>`;
     }).join('');
     const n = list.filter(s => isCleared(s.id)).length;

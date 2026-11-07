@@ -47,6 +47,12 @@ function tap(r) {
 }
 assert.match(node('stages').innerHTML, /stage-number/);
 assert.match(node('stages').innerHTML, /まだクリアしていません/);
+// 番号は区切り(準備編・はじめての案件編…)ごとに1から振り直す
+{
+  const html = node('stages').innerHTML;
+  const firsts = html.split('<div class="area">').slice(1).map(part => part.match(/stage-number">(\d+)</)[1]);
+  assert.ok(firsts.length > 1); firsts.forEach(n => assert.equal(n, '1'));
+}
 // HTML自体にも採点表示を残さない。最小DOMは存在しないIDも作れるため別途検査する。
 assert.doesNotMatch(page, /id="(?:missN|stars|result)"|[★☆]|ミス\s|ノーミス/);
 // 別の版の記録(同じドメイン)は読まない。この版の記録だけでクリア済みになり、全体の進み具合に数える
