@@ -2,6 +2,8 @@
 // Androidを選んだ人に見せるとき、iPhoneのSafariのバーを隠す範囲: [上から隠す高さ, 下から隠し始める位置](590x1280の座標)
 const SAFARI_BARS = {
   "hr-register": [140, 1170],
+  "mp-top": [90, 1150],
+  "mp-register": [90, 1150],
   "hr-popup": [140, 1170],
   "hapitas-top": [140, 1170],
   "hapitas-menu": [140, 1170],
