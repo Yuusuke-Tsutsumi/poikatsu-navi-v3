@@ -57,21 +57,21 @@ assert.match(node('stages').innerHTML, /まだクリアしていません/);
 assert.doesNotMatch(page, /id="(?:missN|stars|result)"|[★☆]|ミス\s|ノーミス/);
 // 別の版の記録(同じドメイン)は読まない。この版の記録だけでクリア済みになり、全体の進み具合に数える
 saved.set('cleared-safari', 'true'); run('home()');
-assert.match(node('done').innerHTML, /全12ステージ中 <em>0<\/em>/);
+assert.match(node('done').innerHTML, /全13ステージ中 <em>0<\/em>/);
 saved.set('v3-cleared-safari', 'true'); run('home()');
 assert.match(node('stages').innerHTML, /クリア済み ✓/);
-assert.match(node('done').innerHTML, /全12ステージ中 <em>1<\/em>/);
+assert.match(node('done').innerHTML, /全13ステージ中 <em>1<\/em>/);
 // iPhoneでは準備編(Android版)を出さず数えない。Androidを選ぶとiPhone用の準備編3つが消える
 assert.doesNotMatch(node('stages').innerHTML, /Android版/);
 assert.match(node('stages').innerHTML, /準備編[\s\S]*1\/3/);
 saved.set('v3-device', 'android'); run('home()');
-assert.match(node('done').innerHTML, /全10ステージ中/);
+assert.match(node('done').innerHTML, /全11ステージ中/);
 assert.match(node('stages').innerHTML, /Android版/);
 assert.doesNotMatch(node('stages').innerHTML, /Safariの設定/);
 run('stage = STAGES.find(s => s.id === "android")');
-assert.equal(run('STAGES[nextStage()].id'), 'unext-flow');
+assert.equal(run('STAGES[nextStage()].id'), 'hapitas-register');
 saved.set('v3-device', 'iphone'); run('stage = STAGES.find(s => s.id === "relay")');
-assert.equal(run('STAGES[nextStage()].id'), 'unext-flow');
+assert.equal(run('STAGES[nextStage()].id'), 'hapitas-register');
 saved.clear(); run('home()');
 
 const STAGES_SCROLL_TARGETS = JSON.parse(run('JSON.stringify(STAGES[0].steps.map((s, i) => s.target ? i : -1).filter(i => i >= 0))'));
@@ -229,7 +229,7 @@ for (const id of JSON.parse(run('JSON.stringify(visible().map(s => s.id))'))) {
   assert.doesNotMatch(run("JSON.stringify({ ...stage, base: null })"), /Safari/, id);
 }
 // 入口はAndroidのホーム画面。Chromeで進み、ポイントサイトのアプリは重要ポイントを出して進まない
-run(`start(${indexOf('unext-flow')})`);
+run(`start(${indexOf('hapitas-register')})`);
 const entry = run('stage.steps.findIndex(s => s.img === "an-home-apps")');
 assert.ok(entry >= 0);
 run(`si = ${entry}; step()`);
@@ -262,7 +262,7 @@ assert.equal(node('img').style.clipPath, `inset(${140 / 12.8}% 0 0% 0)`); // ス
 saved.set('v3-device', 'iphone');
 run(`start(${indexOf('passbook')})`);
 assert.equal(node('img').style.clipPath, ''); assert.equal(node('shot').style.background, '');
-run(`start(${indexOf('unext-flow')})`);
+run(`start(${indexOf('hapitas-register')})`);
 const home = run('stage.steps.findIndex(s => s.img === "hapitas-home")');
 assert.ok(home > 0); assert.equal(run(`stage.steps[${home + 1}].img`), 'hr-safari');
 assert.match(run('JSON.stringify(stage)'), /Safariを開こう/);

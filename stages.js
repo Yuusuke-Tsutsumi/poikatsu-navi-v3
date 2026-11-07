@@ -157,9 +157,9 @@ const STAGES = [
     ],
   },
   {
-    id: 'unext-flow',
-    title: '最初の案件　U-NEXT（ハピタス経由）',
-    lead: 'ハピタスの登録から、U-NEXTの無料トライアルに申し込むまで',
+    id: 'hapitas-register',
+    title: 'ハピタスに登録しよう',
+    lead: 'スクールのノートのリンクから、ハピタスに会員登録するまで',
     guide: true,
     steps: [
       { type: 'info', img: 'hr-note', card: 'bottom', next: '確認した', marks: [[14, 565, 560, 40]], label: 'ハピタスの登録',
@@ -184,6 +184,14 @@ const STAGES = [
       { type: 'info', label: 'ハピタスの登録', text: 'あとは画面の案内に沿って会員登録しよう',
         sub: '紹介ボーナスがつくのは、ハピタス経由で取り組んだ案件の成果が確定したあと。登録してすぐではありません。',
         warn: 'メールアドレス認証まで必ず済ませよう。\n今後案件に取り組むときは、ハピタスのアプリは使わない！必ずSafariからハピタスを開こう。' },
+    ],
+  },
+  {
+    id: 'unext-flow',
+    title: '最初の案件　U-NEXT（ハピタス経由）',
+    lead: 'ハピタス経由で、U-NEXTの無料トライアルに申し込むまで',
+    guide: true,
+    steps: [
       { type: 'info', text: '最初の案件は「U-NEXT」！',
         sub: 'ハピタス経由でU-NEXTの31日間無料トライアルに申し込むと、2,200pt（2,200円分）。<br>ポイントサイトの使い方と仕組みに慣れるための、失敗しても痛くない案件です。' },
       { type: 'quiz', text: '過去にU-NEXTを契約したことがある人は？',
@@ -472,7 +480,7 @@ const STAGES = [
 // ステージ一覧の区切り。start のステージから次の区切りの手前までを、1つのまとまりとして見せる
 const AREAS = [
   { start: 'safari', name: '準備編', desc: '申し込みの前にやっておく設定' },
-  { start: 'unext-flow', name: 'はじめての案件編', desc: '案件の進め方' },
+  { start: 'hapitas-register', name: 'はじめての案件編', desc: '案件の進め方' },
   { start: 'passbook', name: 'ポイント確認編', desc: '通帳の見方・問い合わせ' },
   { start: 'fx-demo', name: 'FX編', desc: 'FX案件の練習' },
 ];
