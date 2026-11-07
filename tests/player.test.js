@@ -174,7 +174,15 @@ for (let i = 0; i < count; i++) {
       node('playerClose').onclick(); assert.ok(!node('player').classList.contains('on'));
     }
     if (s.type === 'info') { if (s.next) assert.match(node('card').innerHTML, new RegExp('>' + s.next + '<')); clickCard({ next: '' }); }
-    if (s.type === 'quiz') {
+    if (s.type === 'quiz' && s.choices.some(c => c.say)) {
+      // 答えで分かれる質問: 続ける答えは案内を出して次へ進む
+      const go = s.choices.findIndex(c => c.say && !c.end);
+      clickCard({ c: String(go) }); assert.equal(run('si'), k);
+      assert.ok(node('modal').classList.contains('on')); assert.equal(node('modalText').textContent, s.choices[go].say);
+      assert.equal(node('modalTitle').textContent, s.choices[go].title);
+      node('modalOk').onclick(); assert.equal(run('si'), k + 1);
+      continue;
+    } else if (s.type === 'quiz') {
       const wrong = s.choices.findIndex(c => !c.ok);
       clickCard({ c: String(wrong) }); assert.equal(run('si'), k);
       clickCard({ c: String(s.choices.findIndex(c => c.ok)) });
@@ -204,6 +212,19 @@ for (let i = 0; i < count; i++) {
   assert.equal(saved.has('stars-' + run('stage.id')), false);
   for (const s of steps.filter(s => s.warn)) assert.ok(node('review').innerHTML.includes(s.warn));
   console.log('PASS full playthrough ' + run('stage.id'));
+}
+// 対象外の答えを選ぶと、案内のあとステージを終える(そのあとの手順は出さない)
+{
+  const k = run(`STAGES.find(s => s.id === 'unext-flow').steps.findIndex(s => s.choices?.some(c => c.end))`);
+  assert.ok(k >= 0);
+  run(`start(STAGES.findIndex(s => s.id === 'unext-flow')); si = ${k}; step()`);
+  const choices = run('stage.steps[si].choices'), end = choices.findIndex(c => c.end);
+  clickCard({ c: String(end) });
+  assert.ok(node('modal').classList.contains('on')); assert.equal(node('modalText').textContent, choices[end].say);
+  node('modalOk').onclick();
+  assert.ok(node('clear').classList.contains('on')); assert.equal(run('si'), k);
+  assert.ok(!node('review').innerHTML.includes('月額2,728円')); // 後半の重要ポイントはおさらいに出さない
+  console.log('PASS answering "already a member" ends the U-NEXT stage early');
 }
 assert.ok(images.every(src => !src.includes('undefined')));
 run('home()');

@@ -208,7 +208,7 @@
 </section>
 
 <div id="player"><video id="video" controls playsinline preload="none"></video><button id="playerClose">閉じて練習に戻る</button></div>
-<div id="modal"><div><em>⚠️ 重要ポイント</em><p id="modalText"></p><button id="modalOk">わかった</button></div></div>
+<div id="modal"><div><em id="modalTitle">⚠️ 重要ポイント</em><p id="modalText"></p><button id="modalOk">わかった</button></div></div>
 
 <!-- ステージの中身は更新が多いので、毎回最新を読む(スマホのキャッシュ対策) -->
 <script>document.write('<script src="stages.js?t=' + Date.now() + '"><\/script><script src="safari-bars.js?t=' + Date.now() + '"><\/script>');</script>
@@ -304,6 +304,7 @@
   }
 
   let alerting = false;
+  let ending = false; // 選んだ答えで、ここでステージを終える(例: 対象外の人)
   function step() {
     const s = stage.steps[si];
     busy = false; stepMisses = 0; scrollP = 0;
@@ -480,10 +481,11 @@
     si < stage.steps.length ? step() : clear();
   }
 
-  function clear() {
+  // last: 途中で終えたときは、そこまでのステップだけをおさらいに出す
+  function clear(last = stage.steps.length - 1) {
     saveClear(stage.id);
     // おさらい: 重要ポイント(warn)と、まとめ用の文(review)を順に並べる
-    const warns = stage.steps.flatMap(s => [s.review, s.warn].filter(Boolean));
+    const warns = stage.steps.slice(0, last + 1).flatMap(s => [s.review, s.warn].filter(Boolean));
     $('review').innerHTML = warns.map(w => `<li>${w}</li>`).join('');
     $('reviewTitle').style.display = warns.length ? '' : 'none';
     $('next').style.display = nextStage() >= 0 ? '' : 'none';
@@ -555,15 +557,23 @@
     if (e.target.dataset.next !== undefined) return correct();
     if (e.target.dataset.c === undefined) return;
     const c = s.choices[e.target.dataset.c];
+    // say: 答えに応じた案内を出してから進む。end を付けた答えは、案内のあとステージを終える
+    if (c.say) { busy = true; ending = Boolean(c.end); openModal(c.say, null, c.title); return; }
     if (c.ok) return correct();
     e.target.classList.add('ng');
     miss(c.msg, 50, 40);
   });
 
   $('stages').addEventListener('click', e => { const b = e.target.closest('.stage'); if (b) start(Number(b.dataset.i)); });
-  $('modalOk').onclick = () => { closeMark(); if (alerting) { alerting = false; $('modal').classList.remove('on'); } else advance(); };
+  $('modalOk').onclick = () => {
+    closeMark();
+    if (alerting) { alerting = false; $('modal').classList.remove('on'); }
+    else if (ending) { ending = false; $('modal').classList.remove('on'); clear(si); }
+    else advance();
+  };
   // 重要ポイントを出すとき、どこの話かを画面上の赤枠で示す。枠が隠れないよう、ポップアップは反対側に寄せる
-  function openModal(text, mark) {
+  function openModal(text, mark, title = '⚠️ 重要ポイント') {
+    $('modalTitle').textContent = title;
     $('modalText').textContent = text;
     const m = $('modal');
     m.classList.remove('at-top', 'at-bottom', 'marked');
